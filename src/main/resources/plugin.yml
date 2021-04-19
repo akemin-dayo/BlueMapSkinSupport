@@ -1,0 +1,12 @@
+name: BlueMapOfflineSkinSupport
+version: 1.0
+description: Adds proper offline skin acquisition support to BlueMap's web UI.
+load: POSTWORLD
+author: Karen/あけみ
+website: https://github.com/akemin-dayo/BlueMapOfflineSkinSupport
+main: ai.akemi.bluemapofflineskinsupport.BlueMapOfflineSkinSupport
+database: false
+softdepend:
+  - BlueMap
+  - SkinsRestorer
+  - CustomSkinsManager
