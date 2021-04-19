@@ -73,8 +73,8 @@ You will then find your newly-built JAR in the `/target/` folder.
 ## Links
 
 * [GitHub Repository](https://github.com/akemin-dayo/BlueMapOfflineSkinSupport)
-* [SpigotMC Resource Page](#)
-* [Bukkit Project Page](#)
+* [SpigotMC Resource Page](https://www.spigotmc.org/resources/bluemapofflineskinsupport.91486/)
+* [Bukkit Project Page](https://dev.bukkit.org/projects/bluemapofflineskinsupport)
 
 ---
 
