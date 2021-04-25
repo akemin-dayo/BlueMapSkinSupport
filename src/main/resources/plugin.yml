@@ -1,5 +1,5 @@
 name: BlueMapOfflineSkinSupport
-version: 1.0
+version: ${project.version}
 description: Adds proper offline skin acquisition support to BlueMap's web UI.
 load: POSTWORLD
 author: Karen/あけみ
