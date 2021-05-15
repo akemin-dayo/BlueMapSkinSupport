@@ -1,18 +1,25 @@
 # BlueMapOfflineSkinSupport configuration file
-#
+# ---
 # webroot
-#     Set this to match the webroot value found in render.conf
+#     Set this to match the webroot value found in BlueMap's render.conf
 #     The default value for BlueMap is "bluemap/web"
-#
+#     Both absolute and relative paths (to the Minecraft server root directory) are fully supported.
+# ---
+# verboseLogging
+#     Enable this option if you want more detailed log output, which can be useful for diagnosing issues.
+#     (Or if you're just curious how the plugin works!)
+# ---
 # alwaysUseSkinsRestorerForSkinLookup
 # alwaysUseCustomSkinsManagerForSkinLookup
-#     Enable these options if you want to always rely on SkinsRestorer / CustomSkinsManager to provide players' skins.
-#     This will make it so that BlueMapOfflineSkinSupport will never use Mojang's native API to look up skins.
-#
+#     Enable these options if you want to *always* rely on SkinsRestorer / CustomSkinsManager to provide players' skins.
+#     This will make it so that BlueMapOfflineSkinSupport will *never* use Mojang's native API to look up skins.
+# ---
 # prefsRevision
-#     Do not change this value.
+#     Please do not change this value, as it is used to track changes made to the configuration file format.
 
 webroot: bluemap/web
+
+verboseLogging: false
 
 alwaysUseSkinsRestorerForSkinLookup: false
 alwaysUseCustomSkinsManagerForSkinLookup: false

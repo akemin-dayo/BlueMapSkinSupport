@@ -85,15 +85,23 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 		preferences.addDefault("webroot", "bluemap/web");
 		preferences.addDefault("alwaysUseSkinsRestorerForSkinLookup", false);
 		preferences.addDefault("alwaysUseCustomSkinsManagerForSkinLookup", false);
+		preferences.addDefault("verboseLogging", false);
 		preferences.addDefault("prefsRevision", 1);
+		preferences.options().copyHeader(true);
 		preferences.options().copyDefaults(true);
 		saveConfig();
 
 		getLogger().info("Preferences initialisation complete!");
 	}
 
+	public void logInfo(String logString) {
+		if (preferences.getBoolean("verboseLogging")) {
+			getLogger().info(logString);
+		}
+	}
+
 	public void writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(Player targetPlayer) {
-		getLogger().info("Notification callback received! Waiting 120 ticks (~6 seconds at 20 TPS) before actually executing...");
+		logInfo("Notification callback received! Waiting 120 ticks (~6 seconds at 20 TPS) before actually executing...");
 		getServer().getScheduler().runTaskLaterAsynchronously(this, () -> {
 			String offlineUUID = null;
 			try {
@@ -111,13 +119,13 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 
 			if (getSkinsRestorerAPI() != null && (preferences.getBoolean("alwaysUseSkinsRestorerForSkinLookup") || getSkinsRestorerAPI().hasSkin(targetPlayer.getName()))) {
 				try {
-					getLogger().info(((preferences.getBoolean("alwaysUseSkinsRestorerForSkinLookup")) ? "Using the SkinsRestorer API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer! Proceeding to use the SkinsRestorer API to derive their true skin..."));
+					logInfo(((preferences.getBoolean("alwaysUseSkinsRestorerForSkinLookup")) ? "Using the SkinsRestorer API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer! Proceeding to use the SkinsRestorer API to derive their true skin..."));
 					String skinsRestorerSkinName = ((skinsRestorerSkinName = getSkinsRestorerAPI().getSkinName(targetPlayer.getName())) != null) ? skinsRestorerSkinName : targetPlayer.getName();
 					String skinsRestorerSkinBase64Blob = ReflectionUtil.invokeMethod(getSkinsRestorerAPI().getSkinData(skinsRestorerSkinName), "getValue").toString();
-					getLogger().info("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
+					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
 					String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(skinsRestorerSkinBase64Blob);
-					getLogger().info("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-					getLogger().info("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using the player's SkinsRestorer skin, " + getSkinsRestorerAPI().getSkinName(targetPlayer.getName()) + "...");
+					logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
+					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using the player's SkinsRestorer skin, " + getSkinsRestorerAPI().getSkinName(targetPlayer.getName()) + "...");
 					writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), offlineUUID);
 					return;
 				} catch (Exception e) {
@@ -125,15 +133,15 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 					e.printStackTrace();
 				}
 			} else if (getCustomSkinsManagerAPI() != null && (preferences.getBoolean("alwaysUseCustomSkinsManagerForSkinLookup") || getCustomSkinsManagerAPI().getPlayer(targetPlayer.getName()).hasCustomSkin())) {
-				getLogger().info(((preferences.getBoolean("alwaysUseCustomSkinsManagerForSkinLookup")) ? "Using the CustomSkinsManager API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via CustomSkinsManager! Proceeding to use the CustomSkinsManager API to derive their true skin..."));
+				logInfo(((preferences.getBoolean("alwaysUseCustomSkinsManagerForSkinLookup")) ? "Using the CustomSkinsManager API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via CustomSkinsManager! Proceeding to use the CustomSkinsManager API to derive their true skin..."));
 				String skinTextureURL = getCustomSkinsManagerAPI().getPlayer(targetPlayer.getName()).getCurrentSkin().getURL();
-				getLogger().info("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-				getLogger().info("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using the player's CustomSkinsManager skin...");
+				logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
+				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using the player's CustomSkinsManager skin...");
 				writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), offlineUUID);
 				return;
 			} else {
-				getLogger().info("The player " + targetPlayer.getName() + " is using a native Mojang skin!");
-				getLogger().info("Using " + targetPlayer.getName() + "'s native Mojang UUID to derive their true skin.");
+				logInfo("The player " + targetPlayer.getName() + " is using a native Mojang skin!");
+				logInfo("Using " + targetPlayer.getName() + "'s native Mojang UUID to derive their true skin.");
 				String effectiveDerivedUUID = deriveMojangUUIDFromMojangUsername(targetPlayer.getName());
 				if (effectiveDerivedUUID == null) {
 					getLogger().warning("effectiveDerivedUUID is null! This usually happens when the username " + targetPlayer.getName() + " is not actually a valid Mojang username.");
@@ -141,8 +149,8 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 					// writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString("http://assets.mojang.com/SkinTemplates/alex.png"), offlineUUID);
 					return;
 				}
-				getLogger().info("Native Mojang UUID for " + targetPlayer.getName() + " is " + effectiveDerivedUUID + "!");
-				getLogger().info("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using effective derived Mojang UUID " + effectiveDerivedUUID + "...");
+				logInfo("Native Mojang UUID for " + targetPlayer.getName() + " is " + effectiveDerivedUUID + "!");
+				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using effective derived Mojang UUID " + effectiveDerivedUUID + "...");
 				writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(deriveSkinTextureURLStringFromMojangUUID(effectiveDerivedUUID)), offlineUUID);
 			}
 		}, 120);
@@ -154,6 +162,14 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 
 	public String getCurrentBukkitServerRootDirectoryWithTrailingSlash() {
 		return getCurrentBukkitServerRootDirectoryWithoutTrailingSlash() + "/";
+	}
+
+	public String getConfiguredWebrootDirectoryWithoutTrailingSlash() {
+		return new File(preferences.getString("webroot")).getAbsolutePath();
+	}
+
+	public String getConfiguredWebrootDirectoryWithTrailingSlash() {
+		return getConfiguredWebrootDirectoryWithoutTrailingSlash() + "/";
 	}
 
 	public String deriveSkinTextureURLStringFromBase64Blob(String base64Blob) {
@@ -172,11 +188,11 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 
 	public String deriveMojangUUIDFromMojangUsername(String mojangUsername) {
 		try {
-			getLogger().info("Deriving Mojang UUID for the username " + mojangUsername + "...");
+			logInfo("Deriving Mojang UUID for the username " + mojangUsername + "...");
 			String userProfileAPIURL = IOUtils.toString(new URL("https://api.mojang.com/users/profiles/minecraft/" + mojangUsername));
 			JSONObject userProfileJSON = (JSONObject)JSONValue.parseWithException(userProfileAPIURL);
 			String derivedMojangUUID = userProfileJSON.get("id").toString();
-			getLogger().info("Mojang UUID for Mojang username " + mojangUsername + " is " + derivedMojangUUID + "!");
+			logInfo("Mojang UUID for Mojang username " + mojangUsername + " is " + derivedMojangUUID + "!");
 			return derivedMojangUUID;
 		} catch (ParseException e) {
 			getLogger().severe("An JSON parser error occurred while attempting to parse the Mojang user profile API response for " + mojangUsername + "! This usually happens when the specified username is not a valid Mojang username, or the Mojang API is inaccessible or down.");
@@ -193,15 +209,15 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 
 	public String deriveSkinTextureURLStringFromMojangUUID(String mojangUUID) {
 		try {
-			getLogger().info("Deriving skinTextureURL for Mojang UUID " + mojangUUID + " via Mojang session API response...");
+			logInfo("Deriving skinTextureURL for Mojang UUID " + mojangUUID + " via Mojang session API response...");
 			String mojangSessionAPIResponse = IOUtils.toString(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + mojangUUID));
 			JSONObject mojangJSONRoot = (JSONObject)JSONValue.parseWithException(mojangSessionAPIResponse);
 			JSONArray mojangJSONPropertiesArray = (JSONArray)mojangJSONRoot.get("properties");
 			JSONObject mojangJSONPropertiesUnderlyingElement = (JSONObject)mojangJSONPropertiesArray.get(0);
 			String mojangSkinBase64Blob = mojangJSONPropertiesUnderlyingElement.get("value").toString();
-			getLogger().info("mojangSkinBase64Blob for Mojang UUID " + mojangUUID + " is " + mojangSkinBase64Blob);
+			logInfo("mojangSkinBase64Blob for Mojang UUID " + mojangUUID + " is " + mojangSkinBase64Blob);
 			String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(mojangSkinBase64Blob);
-			getLogger().info("Derived skin texture URL for Mojang UUID " + mojangUUID + " is " + skinTextureURL + "!");
+			logInfo("Derived skin texture URL for Mojang UUID " + mojangUUID + " is " + skinTextureURL + "!");
 			return skinTextureURL;
 		} catch (ParseException e) {
 			getLogger().severe("A JSON parser error occurred while attempting to parse the Mojang session API response for the Mojang UUID " + mojangUUID + " in order to derive the skinTextureURL!");
@@ -217,18 +233,18 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 		// BlueMap generates 8x8@1x player head images that composite the head and head2 together.
 		// The stock functionality is replicated 100% exactly here. (Including saving to a 32-bit PNG!)
 		try {
-			getLogger().info("Processing raw skin for " + skinTextureURL + "...");
+			logInfo("Processing raw skin for " + skinTextureURL + "...");
 			BufferedImage rawSkin = ImageIO.read(new URL(skinTextureURL));
-			getLogger().info("Extracting head1 texture from " + skinTextureURL + "...");
+			logInfo("Extracting head1 texture from " + skinTextureURL + "...");
 			BufferedImage head1 = rawSkin.getSubimage(8, 8, 8, 8);
-			getLogger().info("Extracting head2 texture from " + skinTextureURL + "...");
+			logInfo("Extracting head2 texture from " + skinTextureURL + "...");
 			BufferedImage head2 = rawSkin.getSubimage(40, 8, 8, 8);
-			getLogger().info("Compositing head1+head2 textures into an unified head texture for " + skinTextureURL + "...");
+			logInfo("Compositing head1+head2 textures into an unified head texture for " + skinTextureURL + "...");
 			BufferedImage composite = new BufferedImage(8, 8, BufferedImage.TYPE_INT_ARGB);
 			Graphics compositeGraphics = composite.getGraphics();
 			compositeGraphics.drawImage(head1, 0, 0, null);
 			compositeGraphics.drawImage(head2, 0, 0, null);
-			getLogger().info("Composition of head1+head2 textures completed for " + skinTextureURL + "!");
+			logInfo("Composition of head1+head2 textures completed for " + skinTextureURL + "!");
 			return composite;
 		} catch (IOException e) {
 			getLogger().severe("A network error occurred while attempting to read the Minecraft skin texture located at " + skinTextureURL + "!");
@@ -238,7 +254,7 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 	}
 
 	public void writeFinalCompositedHeadImageToDiskForOfflineUUID(BufferedImage headImage, String offlineUUID) {
-		String blueMapWebUIPlayerHeadsPathWithTrailingSlash = getCurrentBukkitServerRootDirectoryWithTrailingSlash() + preferences.getString("webroot") + "/assets/playerheads/";
+		String blueMapWebUIPlayerHeadsPathWithTrailingSlash = getConfiguredWebrootDirectoryWithTrailingSlash() + "/assets/playerheads/";
 
 		File blueMapWebUIPlayerHeadsDirectory = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash);
 		if (!blueMapWebUIPlayerHeadsDirectory.exists()) {
@@ -246,11 +262,12 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 		}
 
 		File finalCompositedHeadImage = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash, offlineUUID + ".png");
-		getLogger().info("Writing final composited 8x8@1x head+head2 image for offline UUID " + offlineUUID + " to " + blueMapWebUIPlayerHeadsPathWithTrailingSlash + offlineUUID + ".png...");
+		logInfo("Writing final composited 8x8@1x head+head2 image for offline UUID " + offlineUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "...");
 		try {
 			ImageIO.write(headImage, "png", finalCompositedHeadImage);
 		} catch (IOException e) {
-			getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for offline UUID " + offlineUUID + " to " + blueMapWebUIPlayerHeadsPathWithTrailingSlash + offlineUUID + ".png!");
+			getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for offline UUID " + offlineUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "!");
+			getLogger().severe("Please make sure that your filesystem permissions are set correctly and that your configured webroot directory is valid!");
 			e.printStackTrace();
 		}
 	}
