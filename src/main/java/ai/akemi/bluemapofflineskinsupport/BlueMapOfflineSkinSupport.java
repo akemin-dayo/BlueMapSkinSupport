@@ -23,7 +23,6 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 import net.skinsrestorer.api.SkinsRestorerAPI;
-import net.skinsrestorer.shared.utils.ReflectionUtil;
 import ru.csm.api.services.SkinsAPI;
 
 public class BlueMapOfflineSkinSupport extends JavaPlugin {
@@ -121,7 +120,7 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 				try {
 					logInfo(((preferences.getBoolean("alwaysUseSkinsRestorerForSkinLookup")) ? "Using the SkinsRestorer API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer! Proceeding to use the SkinsRestorer API to derive their true skin..."));
 					String skinsRestorerSkinName = ((skinsRestorerSkinName = getSkinsRestorerAPI().getSkinName(targetPlayer.getName())) != null) ? skinsRestorerSkinName : targetPlayer.getName();
-					String skinsRestorerSkinBase64Blob = ReflectionUtil.invokeMethod(getSkinsRestorerAPI().getSkinData(skinsRestorerSkinName), "getValue").toString();
+					String skinsRestorerSkinBase64Blob = getSkinsRestorerAPI().getSkinData(skinsRestorerSkinName).getValue().toString();
 					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
 					String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(skinsRestorerSkinBase64Blob);
 					logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");

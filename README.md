@@ -51,7 +51,8 @@ Player heads are generated in the exact same way as BlueMap's native player head
 	* `brew install maven` on macOS (requires [Homebrew](https://brew.sh/) to be installed)
 	* `sudo apt install maven` on Debian-based Linux distributions
 	* Follow the instructions [here](https://maven.apache.org/install.html) if you use Windows. (Honestly, I'd recommend just using IntelliJ IDEA if you're on Windows.)
-* [AdoptOpenJDK 8 LTS + HotSpot](https://adoptopenjdk.net/?variant=openjdk8&jvmVariant=hotspot) (newer JDK versions also work, but I targeted JDK 8 here for compatibility reasons)
+* [Adoptium Temurin 8 LTS OpenJDK + HotSpot JVM](https://adoptium.net/?variant=openjdk8&jvmVariant=hotspot) (newer JDK versions also work, but I targeted JDK 8 here for compatibility reasons)
+	* Adoptium is the new name for AdoptOpenJDK.
 
 ### Building (IntelliJ IDEA)
 1. Clone the Git repository by running `git clone https://github.com/akemin-dayo/BlueMapOfflineSkinSupport.git` in a Terminal instance, or use a Git frontend like [SourceTree](https://www.sourcetreeapp.com/).
