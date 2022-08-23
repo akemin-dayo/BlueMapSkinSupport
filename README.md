@@ -37,7 +37,8 @@ Player heads are generated in the exact same way as BlueMap's native player head
 2. Download the latest *.jar file from the [GitHub releases page](https://github.com/akemin-dayo/BlueMapOfflineSkinSupport/releases).
 3. Copy the *.jar file to your `/plugins/` directory.
 4. If you changed your BlueMap web root directory, you'll want to make sure that the value also matches in the configuration file located at `/plugins/BlueMapOfflineSkinSupport/config.yml`. ※ For reference, [here are the default contents of `config.yml`](src/main/resources/config.yml).
-5. Start your server and enjoy having the correct player heads appear on BlueMap's web UI!
+5. Edit BlueMap's `plugin.conf` file and disable its built-in skin downloader to prevent it from overwriting BMOSS-generated skins.
+6. Start your server and enjoy having the correct player heads appear on BlueMap's web UI!
 
 ---
 
