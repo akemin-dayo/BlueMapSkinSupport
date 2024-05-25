@@ -38,7 +38,7 @@ import ru.csm.api.services.SkinsAPI;
 public class BlueMapSkinSupport extends JavaPlugin {
 	private FileConfiguration preferences;
 
-	private SkinsRestorerAPI skinsRestorerAPI;
+	private SkinsRestorerAPI skinsRestorerAPI; // SkinsRestorerX 14.x
 	private SkinsAPI customSkinsManagerAPI;
 	private BlueMapAPI blueMapAPI;
 
@@ -73,6 +73,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		// Get custom skin provider plugin API instance (※ only one can be present at a time)
 		if (getServer().getPluginManager().getPlugin("SkinsRestorer") != null) {
 			getLogger().info("SkinsRestorer / SkinsRestorerX detected! Using SkinsRestorer / SkinsRestorerX API…");
+			// SkinsRestorerX 14.x
 			skinsRestorerAPI = SkinsRestorerAPI.getApi();
 		} else if (getServer().getPluginManager().getPlugin("CustomSkinsManager") != null) {
 			getLogger().info("CustomSkinsManager detected! Using CustomSkinsManager API…");
@@ -164,8 +165,11 @@ public class BlueMapSkinSupport extends JavaPlugin {
 			if (getSkinsRestorerAPI() != null && (preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup") || getSkinsRestorerAPI().hasSkin(targetPlayer.getName()))) {
 				try {
 					logInfo(((preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup")) ? "Using the SkinsRestorer / SkinsRestorerX API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer / SkinsRestorerX! Proceeding to use the SkinsRestorer / SkinsRestorerX API to derive their true skin…"));
+
+					// SkinsRestorerX 14.x
 					String skinsRestorerSkinName = ((skinsRestorerSkinName = getSkinsRestorerAPI().getSkinName(targetPlayer.getName())) != null) ? skinsRestorerSkinName : targetPlayer.getName();
-					String skinsRestorerSkinBase64Blob = getSkinsRestorerAPI().getSkinData(skinsRestorerSkinName).getValue().toString();
+					String skinsRestorerSkinBase64Blob = getSkinsRestorerAPI().getSkinData(skinsRestorerSkinName).getValue();
+
 					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
 					String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(skinsRestorerSkinBase64Blob);
 					logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
