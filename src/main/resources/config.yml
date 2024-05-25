@@ -1,20 +1,19 @@
 # BlueMapSkinSupport configuration file
 # ---
 # verboseLogging
-#     Enable this option if you want more detailed log output, which can be useful for diagnosing issues.
+#     Enable this if you want more detailed log output, which can be useful for diagnosing issues.
 #     (Or if you're just curious how the plugin works!)
 # ---
-# alwaysUseSkinsRestorerForSkinLookup
-# alwaysUseCustomSkinsManagerForSkinLookup
-#     Enable these options if you want to *always* rely on SkinsRestorer / CustomSkinsManager to provide players' skins.
-#     This will make it so that BlueMapSkinSupport will *never* use Mojang's native API to look up skins.
+# alwaysUseCustomSkinProviderPluginForSkinLookup
+#     Enable this if you want to /always/ rely on your configured custom skin provider plugin to provide players' skins.
+#     This will make it so that BlueMapSkinSupport will /never/ use Mojang's native API to look up skins.
+#     If you do not have a supported custom skin provider plugin installed (such as SkinsRestorer / SkinsRestorerX), then this will have no effect.
 # ---
 # prefsRevision
 #     Please do not change this value, as it is used to track changes made to the configuration file format.
 
 verboseLogging: false
 
-alwaysUseSkinsRestorerForSkinLookup: false
-alwaysUseCustomSkinsManagerForSkinLookup: false
+alwaysUseCustomSkinProviderPluginForSkinLookup: false
 
 prefsRevision: 2

@@ -104,16 +104,22 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		preferences = getConfig();
 
 		// Define default preference values
-		preferences.addDefault("alwaysUseSkinsRestorerForSkinLookup", false);
-		preferences.addDefault("alwaysUseCustomSkinsManagerForSkinLookup", false);
+		preferences.addDefault("alwaysUseCustomSkinProviderPluginForSkinLookup", false);
 		preferences.addDefault("verboseLogging", false);
 
 		// Configure preference writer
 		preferences.options().copyHeader(true);
 		preferences.options().copyDefaults(true);
 
+		// Migrate preference values
+		if (preferences.getBoolean("alwaysUseSkinsRestorerForSkinLookup") || preferences.getBoolean("alwaysUseCustomSkinsManagerForSkinLookup")) {
+			preferences.set("alwaysUseCustomSkinProviderPluginForSkinLookup", true);
+		}
+
 		// Remove deprecated preference keys
 		preferences.set("webroot", null);
+		preferences.set("alwaysUseSkinsRestorerForSkinLookup", null);
+		preferences.set("alwaysUseCustomSkinsManagerForSkinLookup", null);
 
 		// Set internal preferences file format revision number
 		preferences.set("prefsRevision", 2);
@@ -147,9 +153,9 @@ public class BlueMapSkinSupport extends JavaPlugin {
 				return;
 			}
 
-			if (getSkinsRestorerAPI() != null && (preferences.getBoolean("alwaysUseSkinsRestorerForSkinLookup") || getSkinsRestorerAPI().hasSkin(targetPlayer.getName()))) {
+			if (getSkinsRestorerAPI() != null && (preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup") || getSkinsRestorerAPI().hasSkin(targetPlayer.getName()))) {
 				try {
-					logInfo(((preferences.getBoolean("alwaysUseSkinsRestorerForSkinLookup")) ? "Using the SkinsRestorer API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer! Proceeding to use the SkinsRestorer API to derive their true skin…"));
+					logInfo(((preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup")) ? "Using the SkinsRestorer API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer! Proceeding to use the SkinsRestorer API to derive their true skin…"));
 					String skinsRestorerSkinName = ((skinsRestorerSkinName = getSkinsRestorerAPI().getSkinName(targetPlayer.getName())) != null) ? skinsRestorerSkinName : targetPlayer.getName();
 					String skinsRestorerSkinBase64Blob = getSkinsRestorerAPI().getSkinData(skinsRestorerSkinName).getValue().toString();
 					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
@@ -162,8 +168,8 @@ public class BlueMapSkinSupport extends JavaPlugin {
 					getLogger().severe("An error occurred while attempting to acquire the SkinsRestorer skin data for " + targetPlayer.getName() + "'s true skin!");
 					e.printStackTrace();
 				}
-			} else if (getCustomSkinsManagerAPI() != null && (preferences.getBoolean("alwaysUseCustomSkinsManagerForSkinLookup") || getCustomSkinsManagerAPI().getPlayer(targetPlayer.getName()).hasCustomSkin())) {
-				logInfo(((preferences.getBoolean("alwaysUseCustomSkinsManagerForSkinLookup")) ? "Using the CustomSkinsManager API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via CustomSkinsManager! Proceeding to use the CustomSkinsManager API to derive their true skin…"));
+			} else if (getCustomSkinsManagerAPI() != null && (preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup") || getCustomSkinsManagerAPI().getPlayer(targetPlayer.getName()).hasCustomSkin())) {
+				logInfo(((preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup")) ? "Using the CustomSkinsManager API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via CustomSkinsManager! Proceeding to use the CustomSkinsManager API to derive their true skin…"));
 				String skinTextureURL = getCustomSkinsManagerAPI().getPlayer(targetPlayer.getName()).getCurrentSkin().getURL();
 				logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
 				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUID + " using the player's CustomSkinsManager skin…");
