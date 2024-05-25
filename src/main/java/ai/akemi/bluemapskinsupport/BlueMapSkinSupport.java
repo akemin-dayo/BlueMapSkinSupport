@@ -254,7 +254,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	}
 
 	public void writeFinalCompositedHeadImageToDiskForPlayerUUID(BufferedImage headImage, String playerUUID) {
-		String blueMapWebUIPlayerHeadsPathWithTrailingSlash = getConfiguredWebrootDirectoryWithTrailingSlash() + "/assets/playerheads/";
+		String blueMapWebUIPlayerHeadsPathWithTrailingSlash = getConfiguredWebrootDirectoryWithoutTrailingSlash() + "/assets/playerheads/";
 
 		File blueMapWebUIPlayerHeadsDirectory = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash);
 		if (!blueMapWebUIPlayerHeadsDirectory.exists()) {
