@@ -42,6 +42,7 @@ Player heads are generated in the exact same way as BlueMap's native player head
 * [Paper](https://papermc.io/downloads) (※ recommended) / [Spigot](https://spigotmc.org/wiki/buildtools) / [CraftBukkit](https://spigotmc.org/wiki/buildtools/#compile-craftbukkit) for Minecraft 1.8 or higher
 	* This should also work with any other Minecraft server software capable of loading Bukkit plugins.
 	* If you are using [Waterfall](https://papermc.io/downloads#Waterfall) / [BungeeCord](https://spigotmc.org/wiki/bungeecord-installation), you will need to install this plugin on each individual backend Minecraft server.
+* [BlueMap 3.8 or higher](https://github.com/BlueMap-Minecraft/BlueMap/releases) (※ BlueMapAPI 2.3.0 or higher)
 * Optionally, one of the supported custom skin provider plugins listed above
 
 ### Installation

@@ -44,6 +44,12 @@
 			<version>14.1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.github.BlueMap-Minecraft</groupId>
+			<artifactId>BlueMapAPI</artifactId>
+			<version>v2.3.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.github.Nan1t</groupId>
 			<artifactId>Custom-Skins-Manager</artifactId>
 			<version>61945ced6b</version>

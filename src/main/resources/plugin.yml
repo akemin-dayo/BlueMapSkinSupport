@@ -6,7 +6,8 @@ author: Karen/あけみ (akemin_dayo)
 website: https://github.com/akemin-dayo/BlueMapSkinSupport
 main: ai.akemi.bluemapskinsupport.BlueMapSkinSupport
 database: false
-softdepend:
+depend:
   - BlueMap
+softdepend:
   - SkinsRestorer
   - CustomSkinsManager
