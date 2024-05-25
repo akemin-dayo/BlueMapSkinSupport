@@ -19,16 +19,20 @@ import java.util.Base64;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 
+// Bukkit
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+// BlueMapAPI >= 2.0.0
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.BlueMapMap;
 import de.bluecolored.bluemap.api.WebApp;
 
+// SkinsRestorerX >= 14.1.0 < 15.0.0
 import net.skinsrestorer.api.SkinsRestorerAPI;
 
+// CustomSkinsManager (※ deprecated)
 import ru.csm.api.services.SkinsAPI;
 
 public class BlueMapSkinSupport extends JavaPlugin {
