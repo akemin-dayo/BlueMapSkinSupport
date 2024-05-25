@@ -165,7 +165,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
 					String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(skinsRestorerSkinBase64Blob);
 					logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUIDString + " using the player's SkinsRestorer / SkinsRestorerX skin with name " + getSkinsRestorerAPI().getSkinName(targetPlayer.getName()) + "…");
+					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUIDString + " using the player's SkinsRestorer / SkinsRestorerX skin with name " + skinsRestorerSkinName + "…");
 					writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUIDString);
 					return;
 				} catch (Exception e) {
