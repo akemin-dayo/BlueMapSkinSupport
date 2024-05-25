@@ -24,7 +24,7 @@ BlueMapSkinSupport is a plugin that allows [BlueMap](https://github.com/BlueMap-
 
 Player heads are generated in the exact same way as BlueMap's native player heads.
 
---
+---
 
 ## Supported custom skin provider plugins
 
