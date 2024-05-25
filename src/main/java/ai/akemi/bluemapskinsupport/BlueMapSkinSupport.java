@@ -1,14 +1,10 @@
 package ai.akemi.bluemapskinsupport;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
 import org.apache.commons.io.IOUtils;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
 import java.awt.Graphics;
@@ -22,7 +18,12 @@ import java.util.Base64;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import net.skinsrestorer.api.SkinsRestorerAPI;
+
 import ru.csm.api.services.SkinsAPI;
 
 public class BlueMapSkinSupport extends JavaPlugin {
