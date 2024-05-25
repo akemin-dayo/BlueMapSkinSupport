@@ -4,6 +4,11 @@
 #     Enable this if you want more detailed log output, which can be useful for diagnosing issues.
 #     (Or if you're just curious how the plugin works!)
 # ---
+# alsoWriteToLegacyUnifiedDirectory
+#     Enable this to also write to the legacy unified player head directory located at `<BlueMap web root>/assets/playerheads`.
+#     This is useful if you have symlinks set up on your Minecraft server that unify every `<BlueMap web root>/maps/<map name>/assets/playerheads` directory into one, and/or if you just want a directory containing every single player head ever fetched.
+#     If you don't know what any of that means, leave this disabled.
+# ---
 # alwaysUseCustomSkinProviderPluginForSkinLookup
 #     Enable this if you want to /always/ rely on your configured custom skin provider plugin to provide players' skins.
 #     This will make it so that BlueMapSkinSupport will /never/ use Mojang's native API to look up skins.
@@ -13,6 +18,8 @@
 #     Please do not change this value, as it is used to track changes made to the configuration file format.
 
 verboseLogging: false
+
+alsoWriteToLegacyUnifiedDirectory: false
 
 alwaysUseCustomSkinProviderPluginForSkinLookup: false
 

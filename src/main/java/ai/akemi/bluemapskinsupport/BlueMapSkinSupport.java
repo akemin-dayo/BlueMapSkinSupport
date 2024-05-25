@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -104,6 +105,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		preferences = getConfig();
 
 		// Define default preference values
+		preferences.addDefault("alsoWriteToLegacyUnifiedDirectory", false);
 		preferences.addDefault("alwaysUseCustomSkinProviderPluginForSkinLookup", false);
 		preferences.addDefault("verboseLogging", false);
 
@@ -290,21 +292,38 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	}
 
 	public void writeFinalCompositedHeadImageToDiskForPlayerUUID(BufferedImage headImage, String playerUUID) {
-		String blueMapWebUIPlayerHeadsPathWithTrailingSlash = getConfiguredWebrootDirectoryWithoutTrailingSlash() + "/assets/playerheads/";
-
-		File blueMapWebUIPlayerHeadsDirectory = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash);
-		if (!blueMapWebUIPlayerHeadsDirectory.exists()) {
-			blueMapWebUIPlayerHeadsDirectory.mkdirs();
+		// BlueMap >= 3.8 (BlueMapAPI >= 2.3.0) changed the way how playerheads are stored — instead of in a unified common directory, they're now stored per map for some reason.
+		// ※ If you want to use this plugin with BlueMap versions all the way down to BlueMap 2.1 for some reason, just comment this entire for loop out, change the BlueMapAPI version to `v2.0.0` in pom.xml, and make sure `alsoWriteToLegacyUnifiedDirectory` is enabled.
+		for (BlueMapMap iteratedMap : getBlueMapAPI().getMaps()) {
+			logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to asset storage directory for map ID " + iteratedMap.getId() + "…");
+			try (OutputStream finalCompositedHeadImage = iteratedMap.getAssetStorage().writeAsset("playerheads/" + playerUUID + ".png")) {
+				ImageIO.write(headImage, "png", finalCompositedHeadImage);
+			} catch (IOException e) {
+				getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUID + "!");
+				getLogger().severe("Please make sure that your filesystem permissions are set correctly!");
+				e.printStackTrace();
+			}
 		}
 
-		File finalCompositedHeadImage = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash, playerUUID + ".png");
-		logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "…");
-		try {
-			ImageIO.write(headImage, "png", finalCompositedHeadImage);
-		} catch (IOException e) {
-			getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "!");
-			getLogger().severe("Please make sure that your filesystem permissions are set correctly and that your configured webroot directory is valid!");
-			e.printStackTrace();
+		// If the preference is enabled, also write to the legacy unified directory.
+		// This exists mostly just for my own use-case, I don't think anyone else would find this useful.
+		if (preferences.getBoolean("alsoWriteToLegacyUnifiedDirectory")) {
+			String blueMapWebUIPlayerHeadsPathWithTrailingSlash = getConfiguredWebrootDirectoryWithTrailingSlash() + "assets/playerheads/";
+
+			File blueMapWebUIPlayerHeadsDirectory = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash);
+			if (!blueMapWebUIPlayerHeadsDirectory.exists()) {
+				blueMapWebUIPlayerHeadsDirectory.mkdirs();
+			}
+
+			File finalCompositedHeadImage = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash, playerUUID + ".png");
+			logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "…");
+			try {
+				ImageIO.write(headImage, "png", finalCompositedHeadImage);
+			} catch (IOException e) {
+				getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to legacy unified player head directory at " + finalCompositedHeadImage.getAbsolutePath() + "!");
+				getLogger().severe("Please make sure that your filesystem permissions are set correctly!");
+				e.printStackTrace();
+			}
 		}
 	}
 }
