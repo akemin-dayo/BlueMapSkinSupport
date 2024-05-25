@@ -1,22 +1,21 @@
 package ai.akemi.bluemapskinsupport;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import java.util.function.Consumer;
+
 import org.bukkit.entity.Player;
 
-// SkinsRestorerX 14.x
-import net.skinsrestorer.api.bukkit.events.SkinApplyBukkitEvent;
+// SkinsRestorerX 15.x
+import net.skinsrestorer.api.event.SkinApplyEvent;
 
-public class SkinsRestorerEventListeners implements Listener {
+public class SkinsRestorerSkinApplyEventEventBusListener implements Consumer<SkinApplyEvent> {
 	private final BlueMapSkinSupport blueMapSkinSupport;
 
-	public SkinsRestorerEventListeners(BlueMapSkinSupport sharedClassInstance) {
+	public SkinsRestorerSkinApplyEventEventBusListener(BlueMapSkinSupport sharedClassInstance) {
 		blueMapSkinSupport = sharedClassInstance;
 	}
 
-	@EventHandler
-	public void onSkinsRestorerSkinApplyBukkitEvent(SkinApplyBukkitEvent skinApplyBukkitEvent) {
-		Player trueBukkitPlayerObject = skinApplyBukkitEvent.getWho();
+	public void accept(SkinApplyEvent skinApplyEvent) {
+        Player trueBukkitPlayerObject = skinApplyEvent.getPlayer(Player.class);
 		blueMapSkinSupport.getLogger().info(trueBukkitPlayerObject.getName() + " changed their skin using SkinsRestorer / SkinsRestorerX! Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()…");
 		blueMapSkinSupport.writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(trueBukkitPlayerObject);
 	}

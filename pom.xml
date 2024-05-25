@@ -40,8 +40,9 @@
 		</dependency>
 		<dependency>
 			<groupId>net.skinsrestorer</groupId>
-			<artifactId>skinsrestorer</artifactId>
-			<version>14.1.0</version>
+			<artifactId>skinsrestorer-api</artifactId>
+			<version>15.0.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.BlueMap-Minecraft</groupId>

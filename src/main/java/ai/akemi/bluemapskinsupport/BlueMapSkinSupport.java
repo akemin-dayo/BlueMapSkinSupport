@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 
@@ -29,8 +30,13 @@ import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.BlueMapMap;
 import de.bluecolored.bluemap.api.WebApp;
 
-// SkinsRestorerX >= 14.1.0 < 15.0.0
-import net.skinsrestorer.api.SkinsRestorerAPI;
+// SkinsRestorerX >= 15.0.0
+import net.skinsrestorer.api.SkinsRestorer;
+import net.skinsrestorer.api.SkinsRestorerProvider;
+import net.skinsrestorer.api.VersionProvider;
+import net.skinsrestorer.api.event.SkinApplyEvent;
+import net.skinsrestorer.api.property.SkinIdentifier;
+import net.skinsrestorer.api.property.SkinProperty;
 
 // CustomSkinsManager (※ deprecated)
 import ru.csm.api.services.SkinsAPI;
@@ -38,11 +44,11 @@ import ru.csm.api.services.SkinsAPI;
 public class BlueMapSkinSupport extends JavaPlugin {
 	private FileConfiguration preferences;
 
-	private SkinsRestorerAPI skinsRestorerAPI; // SkinsRestorerX 14.x
+	private SkinsRestorer skinsRestorerAPI; // SkinsRestorerX 15.x
 	private SkinsAPI customSkinsManagerAPI;
 	private BlueMapAPI blueMapAPI;
 
-	public SkinsRestorerAPI getSkinsRestorerAPI() {
+	public SkinsRestorer getSkinsRestorerAPI() {
 		return skinsRestorerAPI;
 	}
 
@@ -73,8 +79,11 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		// Get custom skin provider plugin API instance (※ only one can be present at a time)
 		if (getServer().getPluginManager().getPlugin("SkinsRestorer") != null) {
 			getLogger().info("SkinsRestorer / SkinsRestorerX detected! Using SkinsRestorer / SkinsRestorerX API…");
-			// SkinsRestorerX 14.x
-			skinsRestorerAPI = SkinsRestorerAPI.getApi();
+			// SkinsRestorerX 15.x
+			skinsRestorerAPI = SkinsRestorerProvider.get();
+			if (!VersionProvider.isCompatibleWith("15")) {
+				getLogger().warning("The version of SkinsRestorer / SkinsRestorerX that is currently installed (" + VersionProvider.getVersionInfo() + ") is not fully supported! BlueMapSkinSupport may or may not work correctly on this version.");
+			}
 		} else if (getServer().getPluginManager().getPlugin("CustomSkinsManager") != null) {
 			getLogger().info("CustomSkinsManager detected! Using CustomSkinsManager API…");
 			customSkinsManagerAPI = getServer().getServicesManager().getRegistration(SkinsAPI.class).getProvider();
@@ -83,7 +92,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		// Register custom skin provider plugin event listeners
 		if (skinsRestorerAPI != null) {
 			getLogger().info("Registering SkinsRestorer / SkinsRestorerX event listeners…");
-			getServer().getPluginManager().registerEvents(new SkinsRestorerEventListeners(this), this);
+			getSkinsRestorerAPI().getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerSkinApplyEventEventBusListener(this));
 		} else if (customSkinsManagerAPI != null) {
 			getLogger().info("Registering CustomSkinsManager event listeners…");
 			getServer().getPluginManager().registerEvents(new CustomSkinsManagerEventListeners(this), this);
@@ -144,8 +153,8 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	}
 
 	public boolean doesPlayerHaveCustomSkinSetViaSkinsRestorerX(Player targetPlayer) {
-		// SkinsRestorerX 14.x
-		return getSkinsRestorerAPI().hasSkin(targetPlayer.getName());
+		// SkinsRestorerX 15.x
+		return getSkinsRestorerAPI().getPlayerStorage().getSkinIdOfPlayer(targetPlayer.getUniqueId()).isPresent();
 	}
 
 	public void writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(Player targetPlayer) {
@@ -171,14 +180,19 @@ public class BlueMapSkinSupport extends JavaPlugin {
 				try {
 					logInfo(((preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup")) ? "Using the SkinsRestorer / SkinsRestorerX API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer / SkinsRestorerX! Proceeding to use the SkinsRestorer / SkinsRestorerX API to derive their true skin…"));
 
-					// SkinsRestorerX 14.x
-					String skinsRestorerSkinName = ((skinsRestorerSkinName = getSkinsRestorerAPI().getSkinName(targetPlayer.getName())) != null) ? skinsRestorerSkinName : targetPlayer.getName();
-					String skinsRestorerSkinBase64Blob = getSkinsRestorerAPI().getSkinData(skinsRestorerSkinName).getValue();
+					// SkinsRestorerX 15.x
+					Optional<SkinProperty> skinsRestorerSkin = getSkinsRestorerAPI().getPlayerStorage().getSkinForPlayer(playerUUID, targetPlayer.getName());
+					Optional<SkinIdentifier> skinsRestorerSkinID = getSkinsRestorerAPI().getPlayerStorage().getSkinIdOfPlayer(playerUUID);
+					if (!skinsRestorerSkin.isPresent()) {
+						throw new Exception("Call to SkinsRestorerX method selector getSkinForPlayer() failed and returned nil!");
+					}
+					String skinsRestorerSkinName = (skinsRestorerSkinID.isPresent()) ? skinsRestorerSkinID.get().getIdentifier() : deriveMojangUUIDFromMojangUsername(targetPlayer.getName());
+					String skinsRestorerSkinBase64Blob = skinsRestorerSkin.get().getValue();
 
 					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
 					String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(skinsRestorerSkinBase64Blob);
 					logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUIDString + " using the player's SkinsRestorer / SkinsRestorerX skin with name " + skinsRestorerSkinName + "…");
+					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUIDString + " using the player's SkinsRestorer / SkinsRestorerX skin with name or ID " + skinsRestorerSkinName + "…");
 					writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUIDString);
 					return;
 				} catch (Exception e) {
@@ -242,7 +256,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	public String deriveMojangUUIDFromMojangUsername(String mojangUsername) {
 		try {
 			logInfo("Deriving Mojang UUID for the username " + mojangUsername + "…");
-			String userProfileAPIURL = IOUtils.toString(new URL("https://api.mojang.com/users/profiles/minecraft/" + mojangUsername), StandardCharsets.UTF_8);
+			String userProfileAPIURL = IOUtils.toString(new URL("https://api.mojang.com/users/profiles/minecraft/" + mojangUsername));
 			JSONObject userProfileJSON = (JSONObject)JSONValue.parseWithException(userProfileAPIURL);
 			String derivedMojangUUID = userProfileJSON.get("id").toString();
 			logInfo("Mojang UUID for Mojang username " + mojangUsername + " is " + derivedMojangUUID + "!");
@@ -263,7 +277,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	public String deriveSkinTextureURLStringFromMojangUUID(String mojangUUID) {
 		try {
 			logInfo("Deriving skinTextureURL for Mojang UUID " + mojangUUID + " via Mojang session API response…");
-			String mojangSessionAPIResponse = IOUtils.toString(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + mojangUUID), StandardCharsets.UTF_8);
+			String mojangSessionAPIResponse = IOUtils.toString(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + mojangUUID));
 			JSONObject mojangJSONRoot = (JSONObject)JSONValue.parseWithException(mojangSessionAPIResponse);
 			JSONArray mojangJSONPropertiesArray = (JSONArray)mojangJSONRoot.get("properties");
 			JSONObject mojangJSONPropertiesUnderlyingElement = (JSONObject)mojangJSONPropertiesArray.get(0);
