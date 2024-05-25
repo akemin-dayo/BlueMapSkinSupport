@@ -28,7 +28,7 @@ public class SkinsRestorerEventListeners implements Listener {
 				return;
 			}
 
-			blueMapSkinSupport.getLogger().info(trueBukkitPlayerObject.getName() + " opened and closed the SkinsRestorer menu! This action may have resulted in a skin change. Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()...");
+			blueMapSkinSupport.getLogger().info(trueBukkitPlayerObject.getName() + " opened and closed the SkinsRestorer menu! This action may have resulted in a skin change. Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()…");
 			blueMapSkinSupport.writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(trueBukkitPlayerObject);
 		}
 	}

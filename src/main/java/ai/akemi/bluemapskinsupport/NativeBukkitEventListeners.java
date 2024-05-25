@@ -13,7 +13,7 @@ public class NativeBukkitEventListeners implements Listener {
 
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
-		blueMapSkinSupport.getLogger().info(event.getPlayer().getName() + " joined the server! Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()...");
+		blueMapSkinSupport.getLogger().info(event.getPlayer().getName() + " joined the server! Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()…");
 		blueMapSkinSupport.writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(event.getPlayer());
 	}
 }

@@ -17,14 +17,14 @@ public class CustomSkinsManagerEventListeners implements Listener {
 	@EventHandler
 	public void onSkinChangedEvent(SkinChangedEvent skinChangedEvent) {
 		Player trueBukkitPlayerObject = blueMapSkinSupport.getServer().getPlayer(skinChangedEvent.getPlayer().getUUID());
-		blueMapSkinSupport.getLogger().info(trueBukkitPlayerObject.getName() + " changed their skin using CustomSkinsManager! Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()...");
+		blueMapSkinSupport.getLogger().info(trueBukkitPlayerObject.getName() + " changed their skin using CustomSkinsManager! Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()…");
 		blueMapSkinSupport.writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(trueBukkitPlayerObject);
 	}
 	
 	@EventHandler
 	public void onSkinResetEvent(SkinResetEvent skinResetEvent) {
 		Player trueBukkitPlayerObject = blueMapSkinSupport.getServer().getPlayer(skinResetEvent.getPlayer().getUUID());
-		blueMapSkinSupport.getLogger().info(skinResetEvent.getPlayer().getName() + " reset their skin using CustomSkinsManager! Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()...");
+		blueMapSkinSupport.getLogger().info(skinResetEvent.getPlayer().getName() + " reset their skin using CustomSkinsManager! Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()…");
 		blueMapSkinSupport.writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(trueBukkitPlayerObject);
 	}
 }
