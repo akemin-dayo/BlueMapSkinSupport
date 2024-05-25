@@ -1,4 +1,4 @@
-package ai.akemi.bluemapofflineskinsupport;
+package ai.akemi.bluemapskinsupport;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,7 +25,7 @@ import javax.imageio.ImageIO;
 import net.skinsrestorer.api.SkinsRestorerAPI;
 import ru.csm.api.services.SkinsAPI;
 
-public class BlueMapOfflineSkinSupport extends JavaPlugin {
+public class BlueMapSkinSupport extends JavaPlugin {
 	private FileConfiguration preferences;
 
 	private SkinsRestorerAPI skinsRestorerAPI;
@@ -41,10 +41,10 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		getLogger().info("BlueMapOfflineSkinSupport");
-		getLogger().info("(C) 2021 Karen/あけみ");
+		getLogger().info("BlueMapSkinSupport");
+		getLogger().info("(C) 2021-2024 Karen/あけみ (akemin_dayo)");
 		getLogger().info("Version " + this.getDescription().getVersion());
-		getLogger().info("https://github.com/akemin-dayo/BlueMapOfflineSkinSupport");
+		getLogger().info("https://github.com/akemin-dayo/BlueMapSkinSupport");
 
 		initialisePreferences();
 
@@ -102,16 +102,16 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 	public void writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(Player targetPlayer) {
 		logInfo("Notification callback received! Waiting 120 ticks (~6 seconds at 20 TPS) before actually executing...");
 		getServer().getScheduler().runTaskLaterAsynchronously(this, () -> {
-			String offlineUUID = null;
+			String playerUUID = null;
 			try {
-				offlineUUID = targetPlayer.getUniqueId().toString();
+				playerUUID = targetPlayer.getUniqueId().toString();
 			} catch (NullPointerException e) {
 				getLogger().severe("targetPlayer is null! This usually happens when a player joins and leaves quickly within 120 ticks (~6 seconds at 20 TPS).");
 				e.printStackTrace();
 				return;
 			}
 
-			if (getServer().getPlayer(UUID.fromString(offlineUUID)) == null) {
+			if (getServer().getPlayer(UUID.fromString(playerUUID)) == null) {
 				getLogger().severe("Underlying true Player for targetPlayer is null! This usually happens when a player joins and leaves quickly within 120 ticks (~6 seconds at 20 TPS).");
 				return;
 			}
@@ -124,8 +124,8 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
 					String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(skinsRestorerSkinBase64Blob);
 					logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using the player's SkinsRestorer skin, " + getSkinsRestorerAPI().getSkinName(targetPlayer.getName()) + "...");
-					writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), offlineUUID);
+					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUID + " using the player's SkinsRestorer skin, " + getSkinsRestorerAPI().getSkinName(targetPlayer.getName()) + "...");
+					writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUID);
 					return;
 				} catch (Exception e) {
 					getLogger().severe("An error occurred while attempting to acquire the SkinsRestorer skin data for " + targetPlayer.getName() + "'s true skin!");
@@ -135,8 +135,8 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 				logInfo(((preferences.getBoolean("alwaysUseCustomSkinsManagerForSkinLookup")) ? "Using the CustomSkinsManager API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via CustomSkinsManager! Proceeding to use the CustomSkinsManager API to derive their true skin..."));
 				String skinTextureURL = getCustomSkinsManagerAPI().getPlayer(targetPlayer.getName()).getCurrentSkin().getURL();
 				logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using the player's CustomSkinsManager skin...");
-				writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), offlineUUID);
+				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUID + " using the player's CustomSkinsManager skin...");
+				writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUID);
 				return;
 			} else {
 				logInfo("The player " + targetPlayer.getName() + " is using a native Mojang skin!");
@@ -144,13 +144,13 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 				String effectiveDerivedUUID = deriveMojangUUIDFromMojangUsername(targetPlayer.getName());
 				if (effectiveDerivedUUID == null) {
 					getLogger().warning("effectiveDerivedUUID is null! This usually happens when the username " + targetPlayer.getName() + " is not actually a valid Mojang username.");
-					// getLogger().warning("Writing default fallback 8x8@1x head+head2 image for " + player.getName() + " with offline UUID " + offlineUUID + " instead...");
-					// writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString("http://assets.mojang.com/SkinTemplates/alex.png"), offlineUUID);
+					// getLogger().warning("Writing default fallback 8x8@1x head+head2 image for " + player.getName() + " with player UUID " + playerUUID + " instead...");
+					// writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString("http://assets.mojang.com/SkinTemplates/alex.png"), playerUUID);
 					return;
 				}
 				logInfo("Native Mojang UUID for " + targetPlayer.getName() + " is " + effectiveDerivedUUID + "!");
-				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with offline UUID " + offlineUUID + " using effective derived Mojang UUID " + effectiveDerivedUUID + "...");
-				writeFinalCompositedHeadImageToDiskForOfflineUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(deriveSkinTextureURLStringFromMojangUUID(effectiveDerivedUUID)), offlineUUID);
+				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUID + " using effective derived Mojang UUID " + effectiveDerivedUUID + "...");
+				writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(deriveSkinTextureURLStringFromMojangUUID(effectiveDerivedUUID)), playerUUID);
 			}
 		}, 120);
 	}
@@ -252,7 +252,7 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 		return null;
 	}
 
-	public void writeFinalCompositedHeadImageToDiskForOfflineUUID(BufferedImage headImage, String offlineUUID) {
+	public void writeFinalCompositedHeadImageToDiskForPlayerUUID(BufferedImage headImage, String playerUUID) {
 		String blueMapWebUIPlayerHeadsPathWithTrailingSlash = getConfiguredWebrootDirectoryWithTrailingSlash() + "/assets/playerheads/";
 
 		File blueMapWebUIPlayerHeadsDirectory = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash);
@@ -260,12 +260,12 @@ public class BlueMapOfflineSkinSupport extends JavaPlugin {
 			blueMapWebUIPlayerHeadsDirectory.mkdirs();
 		}
 
-		File finalCompositedHeadImage = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash, offlineUUID + ".png");
-		logInfo("Writing final composited 8x8@1x head+head2 image for offline UUID " + offlineUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "...");
+		File finalCompositedHeadImage = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash, playerUUID + ".png");
+		logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "...");
 		try {
 			ImageIO.write(headImage, "png", finalCompositedHeadImage);
 		} catch (IOException e) {
-			getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for offline UUID " + offlineUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "!");
+			getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "!");
 			getLogger().severe("Please make sure that your filesystem permissions are set correctly and that your configured webroot directory is valid!");
 			e.printStackTrace();
 		}

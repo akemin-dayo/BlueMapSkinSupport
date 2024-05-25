@@ -1,7 +1,7 @@
-<p align="center"><img src="https://github.com/akemin-dayo/BlueMapOfflineSkinSupport/raw/master/BlueMapOfflineSkinSupport.png" alt="BlueMapOfflineSkinSupport icon" width="128"></p>
+<p align="center"><img src="https://github.com/akemin-dayo/BlueMapSkinSupport/raw/master/BlueMapSkinSupport.png" alt="BlueMapSkinSupport icon" width="128"></p>
 
-# BlueMapOfflineSkinSupport
-###### Adds proper offline and custom skin acquisition support to BlueMap's web UI.
+# BlueMapSkinSupport
+###### Adds support to BlueMap for acquiring skins from custom skin provider plugins, as well as offline-mode servers.
 
 ### Table of Contents
 * [**What is this?**](#what-is-this)
@@ -18,7 +18,9 @@
 
 ## What is this?
 
-BlueMapOfflineSkinSupport is a plugin that allows to [BlueMap](https://github.com/BlueMap-Minecraft/BlueMap/releases) properly acquire and display player heads for offline-mode Minecraft servers, as well as online-mode (and offline-mode) servers that allow the use of player-defined custom skins using [SkinsRestorer](https://github.com/SkinsRestorer/SkinsRestorerX/releases) or [CustomSkinsManager](https://spigotmc.org/resources/57760). (※ The use of these plugins is not required.)
+BlueMapSkinSupport is a plugin that allows [BlueMap](https://github.com/BlueMap-Minecraft/BlueMap/releases) to be able to acquire and display player heads for Minecraft servers (online-mode or offline-mode) that are using custom skin provider plugins for custom player-defined skins, as well as offline-mode Minecraft servers without any plugins installed.
+
+Supported custom skin provider plugins are [SkinsRestorer / SkinsRestorerX](https://github.com/SkinsRestorer/SkinsRestorerX/releases) or [CustomSkinsManager](https://spigotmc.org/resources/57760). (※ The use of these plugins is not required.)
 
 Player heads are generated in the exact same way as BlueMap's native player heads, and the web root directory, among other options are fully configurable.
 
@@ -30,14 +32,14 @@ Player heads are generated in the exact same way as BlueMap's native player head
 * [Paper](https://papermc.io/downloads) (recommended) / [Spigot](https://spigotmc.org/wiki/buildtools) / [CraftBukkit](https://spigotmc.org/wiki/buildtools/#compile-craftbukkit) for Minecraft 1.8 or higher
 	* This should also work with any other Minecraft server software capable of loading Bukkit plugins.
 	* If you are using [Waterfall](https://papermc.io/downloads#Waterfall) / [BungeeCord](https://spigotmc.org/wiki/bungeecord-installation), you will need to install this plugin on each individual backend Minecraft server.
-* Optionally: [SkinsRestorer](https://github.com/SkinsRestorer/SkinsRestorerX/releases) or [CustomSkinsManager](https://spigotmc.org/resources/57760)
+* Optionally: [SkinsRestorer / SkinsRestorerX](https://github.com/SkinsRestorer/SkinsRestorerX/releases) or [CustomSkinsManager](https://spigotmc.org/resources/57760)
 	
 ### Installation
 1. Completely shut down your Minecraft server using `/stop`.
-2. Download the latest *.jar file from the [GitHub releases page](https://github.com/akemin-dayo/BlueMapOfflineSkinSupport/releases).
+2. Download the latest *.jar file from the [GitHub releases page](https://github.com/akemin-dayo/BlueMapSkinSupport/releases).
 3. Copy the *.jar file to your `/plugins/` directory.
-4. If you changed your BlueMap web root directory, you'll want to make sure that the value also matches in the configuration file located at `/plugins/BlueMapOfflineSkinSupport/config.yml`. ※ For reference, [here are the default contents of `config.yml`](src/main/resources/config.yml).
-5. Edit BlueMap's `plugin.conf` file and disable its built-in skin downloader to prevent it from overwriting BMOSS-generated skins.
+4. If you changed your BlueMap web root directory, you'll want to make sure that the value also matches in the configuration file located at `/plugins/BlueMapSkinSupport/config.yml`. ※ For reference, [here are the default contents of `config.yml`](src/main/resources/config.yml).
+5. Edit BlueMap's `plugin.conf` file and disable its built-in skin downloader to prevent it from overwriting BMSS-generated skins.
 6. Start your server and enjoy having the correct player heads appear on BlueMap's web UI!
 
 ---
@@ -54,15 +56,15 @@ Player heads are generated in the exact same way as BlueMap's native player head
 	* Adoptium is the new name for AdoptOpenJDK.
 
 ### Building (IntelliJ IDEA)
-1. Clone the Git repository by running `git clone https://github.com/akemin-dayo/BlueMapOfflineSkinSupport.git` in a Terminal instance, or use a Git frontend like [SourceTree](https://sourcetreeapp.com/).
+1. Clone the Git repository by running `git clone https://github.com/akemin-dayo/BlueMapSkinSupport.git` in a Terminal instance, or use a Git frontend like [SourceTree](https://sourcetreeapp.com/).
 2. Open the cloned project directory in IntelliJ IDEA.
 3. Click on the Maven panel on the right side and go to "Lifecycle", then double-click on `package`.
 4. You will find your newly-built JAR in the `/target/` folder.
 
 ### Building (CLI)
 ```shell
-git clone https://github.com/akemin-dayo/BlueMapOfflineSkinSupport.git
-cd BlueMapOfflineSkinSupport
+git clone https://github.com/akemin-dayo/BlueMapSkinSupport.git
+cd BlueMapSkinSupport
 mvn package
 ```
 
@@ -72,9 +74,9 @@ You will then find your newly-built JAR in the `/target/` folder.
 
 ## Links
 
-* [GitHub Repository](https://github.com/akemin-dayo/BlueMapOfflineSkinSupport)
-* [SpigotMC Resource Page](https://spigotmc.org/resources/bluemapofflineskinsupport.91486)
-* [BukkitDev Project Page](https://dev.bukkit.org/projects/bluemapofflineskinsupport)
+* [GitHub Repository](https://github.com/akemin-dayo/BlueMapSkinSupport)
+* [SpigotMC Resource Page](https://spigotmc.org/resources/bluemapskinsupport.91486)
+* [BukkitDev Project Page](https://dev.bukkit.org/projects/bluemapskinsupport)
 
 ---
 
@@ -98,4 +100,4 @@ There were various other minor issues, too (for instance, the generated images a
 
 At this point, I figured it'd be easier to just write my own plugin from scratch, and so… that's what I did. After a few hours, this project was finished, and now you're seeing it here.
 
-_**Disclaimer:** While BlueMapOfflineSkinSupport contains only my own original code/implementation, _technically_ the core idea of "just simply overwrite the player head images in BlueMap's webroot" _was_ otDan's to begin with, so I decided to speak with him first to notify him of this project and make sure he was okay with me releasing it publicly. He gave his full approval._
+_**Disclaimer:** While BlueMapSkinSupport contains only my own original code/implementation, _technically_ the core idea of "just simply overwrite the player head images in BlueMap's webroot" _was_ otDan's to begin with, so I decided to speak with him first to notify him of this project and make sure he was okay with me releasing it publicly. He gave his full approval._

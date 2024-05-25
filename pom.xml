@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ai.akemi</groupId>
-	<artifactId>BlueMapOfflineSkinSupport</artifactId>
+	<artifactId>BlueMapSkinSupport</artifactId>
 	<version>1.3</version>
 
 	<properties>

@@ -1,10 +1,10 @@
-name: BlueMapOfflineSkinSupport
+name: BlueMapSkinSupport
 version: ${project.version}
-description: Adds proper offline skin acquisition support to BlueMap's web UI.
+description: Adds support to BlueMap for acquiring skins from custom skin provider plugins, as well as offline-mode servers.
 load: POSTWORLD
-author: Karen/あけみ
-website: https://github.com/akemin-dayo/BlueMapOfflineSkinSupport
-main: ai.akemi.bluemapofflineskinsupport.BlueMapOfflineSkinSupport
+author: Karen/あけみ (akemin_dayo)
+website: https://github.com/akemin-dayo/BlueMapSkinSupport
+main: ai.akemi.bluemapskinsupport.BlueMapSkinSupport
 database: false
 softdepend:
   - BlueMap

@@ -1,4 +1,4 @@
-# BlueMapOfflineSkinSupport configuration file
+# BlueMapSkinSupport configuration file
 # ---
 # webroot
 #     Set this to match the webroot value found in BlueMap's render.conf
@@ -12,7 +12,7 @@
 # alwaysUseSkinsRestorerForSkinLookup
 # alwaysUseCustomSkinsManagerForSkinLookup
 #     Enable these options if you want to *always* rely on SkinsRestorer / CustomSkinsManager to provide players' skins.
-#     This will make it so that BlueMapOfflineSkinSupport will *never* use Mojang's native API to look up skins.
+#     This will make it so that BlueMapSkinSupport will *never* use Mojang's native API to look up skins.
 # ---
 # prefsRevision
 #     Please do not change this value, as it is used to track changes made to the configuration file format.

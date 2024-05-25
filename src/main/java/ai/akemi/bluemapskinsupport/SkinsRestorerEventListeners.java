@@ -1,4 +1,4 @@
-package ai.akemi.bluemapofflineskinsupport;
+package ai.akemi.bluemapskinsupport;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -6,10 +6,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.entity.Player;
 
 public class SkinsRestorerEventListeners implements Listener {
-	private final BlueMapOfflineSkinSupport blueMapOfflineSkinSupport;
+	private final BlueMapSkinSupport blueMapSkinSupport;
 	
-	public SkinsRestorerEventListeners(BlueMapOfflineSkinSupport sharedClassInstance) {
-		blueMapOfflineSkinSupport = sharedClassInstance;
+	public SkinsRestorerEventListeners(BlueMapSkinSupport sharedClassInstance) {
+		blueMapSkinSupport = sharedClassInstance;
 	}
 
 	@EventHandler
@@ -24,12 +24,12 @@ public class SkinsRestorerEventListeners implements Listener {
 			if (inventoryCloseEvent.getPlayer() instanceof Player) {
 				trueBukkitPlayerObject = (Player)inventoryCloseEvent.getPlayer();
 			} else {
-				blueMapOfflineSkinSupport.getLogger().severe("Could not determine the true Bukkit Player object for " + inventoryCloseEvent.getPlayer().getName() + "!");
+				blueMapSkinSupport.getLogger().severe("Could not determine the true Bukkit Player object for " + inventoryCloseEvent.getPlayer().getName() + "!");
 				return;
 			}
 
-			blueMapOfflineSkinSupport.getLogger().info(trueBukkitPlayerObject.getName() + " opened and closed the SkinsRestorer menu! This action may have resulted in a skin change. Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()...");
-			blueMapOfflineSkinSupport.writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(trueBukkitPlayerObject);
+			blueMapSkinSupport.getLogger().info(trueBukkitPlayerObject.getName() + " opened and closed the SkinsRestorer menu! This action may have resulted in a skin change. Calling writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback()...");
+			blueMapSkinSupport.writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(trueBukkitPlayerObject);
 		}
 	}
 }
