@@ -143,6 +143,11 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		}
 	}
 
+	public boolean doesPlayerHaveCustomSkinSetViaSkinsRestorerX(Player targetPlayer) {
+		// SkinsRestorerX 14.x
+		return getSkinsRestorerAPI().hasSkin(targetPlayer.getName());
+	}
+
 	public void writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(Player targetPlayer) {
 		logInfo("Notification callback received! Waiting 120 ticks (~6 seconds at 20 TPS) before actually executing…");
 		getServer().getScheduler().runTaskLaterAsynchronously(this, () -> {
@@ -162,7 +167,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 				return;
 			}
 
-			if (getSkinsRestorerAPI() != null && (preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup") || getSkinsRestorerAPI().hasSkin(targetPlayer.getName()))) {
+			if (getSkinsRestorerAPI() != null && (preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup") || doesPlayerHaveCustomSkinSetViaSkinsRestorerX(targetPlayer))) {
 				try {
 					logInfo(((preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup")) ? "Using the SkinsRestorer / SkinsRestorerX API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via SkinsRestorer / SkinsRestorerX! Proceeding to use the SkinsRestorer / SkinsRestorerX API to derive their true skin…"));
 
