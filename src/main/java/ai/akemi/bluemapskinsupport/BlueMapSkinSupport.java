@@ -66,7 +66,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		getLogger().info("Registering native Bukkit event listeners...");
 		getServer().getPluginManager().registerEvents(new NativeBukkitEventListeners(this), this);
 	}
-	
+
 	private void initialisePreferences() {
 		getLogger().info("Initialising preferences...");
 
