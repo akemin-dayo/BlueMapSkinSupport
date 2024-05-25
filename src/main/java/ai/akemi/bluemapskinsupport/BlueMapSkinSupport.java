@@ -242,7 +242,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	public String deriveMojangUUIDFromMojangUsername(String mojangUsername) {
 		try {
 			logInfo("Deriving Mojang UUID for the username " + mojangUsername + "…");
-			String userProfileAPIURL = IOUtils.toString(new URL("https://api.mojang.com/users/profiles/minecraft/" + mojangUsername));
+			String userProfileAPIURL = IOUtils.toString(new URL("https://api.mojang.com/users/profiles/minecraft/" + mojangUsername), StandardCharsets.UTF_8);
 			JSONObject userProfileJSON = (JSONObject)JSONValue.parseWithException(userProfileAPIURL);
 			String derivedMojangUUID = userProfileJSON.get("id").toString();
 			logInfo("Mojang UUID for Mojang username " + mojangUsername + " is " + derivedMojangUUID + "!");
@@ -263,7 +263,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	public String deriveSkinTextureURLStringFromMojangUUID(String mojangUUID) {
 		try {
 			logInfo("Deriving skinTextureURL for Mojang UUID " + mojangUUID + " via Mojang session API response…");
-			String mojangSessionAPIResponse = IOUtils.toString(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + mojangUUID));
+			String mojangSessionAPIResponse = IOUtils.toString(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + mojangUUID), StandardCharsets.UTF_8);
 			JSONObject mojangJSONRoot = (JSONObject)JSONValue.parseWithException(mojangSessionAPIResponse);
 			JSONArray mojangJSONPropertiesArray = (JSONArray)mojangJSONRoot.get("properties");
 			JSONObject mojangJSONPropertiesUnderlyingElement = (JSONObject)mojangJSONPropertiesArray.get(0);
