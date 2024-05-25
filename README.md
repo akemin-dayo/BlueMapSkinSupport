@@ -22,7 +22,7 @@
 
 BlueMapSkinSupport is a plugin that allows [BlueMap](https://github.com/BlueMap-Minecraft/BlueMap/releases) to be able to acquire and display player heads for Minecraft servers (in both online-mode or offline-mode) that are using custom skin provider plugins for custom player-defined skins, as well as offline-mode Minecraft servers that have no custom skin provider plugins installed.
 
-Player heads are generated in the exact same way as BlueMap's native player heads, and the web root directory, among other options are fully configurable.
+Player heads are generated in the exact same way as BlueMap's native player heads.
 
 --
 
@@ -49,7 +49,7 @@ Player heads are generated in the exact same way as BlueMap's native player head
 1. Completely shut down your Minecraft server using `/stop`.
 2. Download the latest *.jar file from the [GitHub releases page](https://github.com/akemin-dayo/BlueMapSkinSupport/releases).
 3. Copy the *.jar file to your `/plugins/` directory.
-4. If you changed your BlueMap web root directory, you'll want to make sure that the value also matches in the configuration file located at `/plugins/BlueMapSkinSupport/config.yml`. ※ For reference, [here are the default contents of `config.yml`](src/main/resources/config.yml).
+4. If you want, you can change how BlueMapSkinSupport behaves by modifying its configuration file located at `/plugins/BlueMapSkinSupport/config.yml`. (※ For reference, [here are the default contents of `config.yml`](src/main/resources/config.yml).)
 5. Edit BlueMap's `plugin.conf` file and disable its built-in skin downloader to prevent it from overwriting BMSS-generated skins.
 6. Start your server and enjoy having the correct player heads appear on BlueMap's web UI!
 

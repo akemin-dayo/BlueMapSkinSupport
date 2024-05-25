@@ -102,13 +102,23 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		}
 
 		preferences = getConfig();
-		preferences.addDefault("webroot", "bluemap/web");
+
+		// Define default preference values
 		preferences.addDefault("alwaysUseSkinsRestorerForSkinLookup", false);
 		preferences.addDefault("alwaysUseCustomSkinsManagerForSkinLookup", false);
 		preferences.addDefault("verboseLogging", false);
-		preferences.addDefault("prefsRevision", 1);
+
+		// Configure preference writer
 		preferences.options().copyHeader(true);
 		preferences.options().copyDefaults(true);
+
+		// Remove deprecated preference keys
+		preferences.set("webroot", null);
+
+		// Set internal preferences file format revision number
+		preferences.set("prefsRevision", 2);
+
+		// Write preferences to disk
 		saveConfig();
 
 		getLogger().info("Preferences initialisation complete!");
@@ -185,7 +195,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	}
 
 	public String getConfiguredWebrootDirectoryWithoutTrailingSlash() {
-		return new File(preferences.getString("webroot")).getAbsolutePath();
+		return getBlueMapAPI().getWebApp().getWebRoot().toAbsolutePath().toString();
 	}
 
 	public String getConfiguredWebrootDirectoryWithTrailingSlash() {
