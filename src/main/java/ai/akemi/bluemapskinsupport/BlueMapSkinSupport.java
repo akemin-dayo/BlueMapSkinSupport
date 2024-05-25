@@ -141,16 +141,18 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	public void writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(Player targetPlayer) {
 		logInfo("Notification callback received! Waiting 120 ticks (~6 seconds at 20 TPS) before actually executing…");
 		getServer().getScheduler().runTaskLaterAsynchronously(this, () -> {
-			String playerUUID = null;
+			UUID playerUUID = null;
+			String playerUUIDString = null;
 			try {
-				playerUUID = targetPlayer.getUniqueId().toString();
+				playerUUID = targetPlayer.getUniqueId();
+				playerUUIDString = playerUUID.toString();
 			} catch (NullPointerException e) {
 				getLogger().severe("targetPlayer is null! This usually happens when a player joins and leaves quickly within 120 ticks (~6 seconds at 20 TPS).");
 				e.printStackTrace();
 				return;
 			}
 
-			if (getServer().getPlayer(UUID.fromString(playerUUID)) == null) {
+			if (getServer().getPlayer(playerUUID) == null) {
 				getLogger().severe("Underlying true Player for targetPlayer is null! This usually happens when a player joins and leaves quickly within 120 ticks (~6 seconds at 20 TPS).");
 				return;
 			}
@@ -163,8 +165,8 @@ public class BlueMapSkinSupport extends JavaPlugin {
 					logInfo("skinsRestorerSkinBase64Blob for " + targetPlayer.getName() + " is " + skinsRestorerSkinBase64Blob);
 					String skinTextureURL = deriveSkinTextureURLStringFromBase64Blob(skinsRestorerSkinBase64Blob);
 					logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUID + " using the player's SkinsRestorer / SkinsRestorerX skin with name " + getSkinsRestorerAPI().getSkinName(targetPlayer.getName()) + "…");
-					writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUID);
+					logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUIDString + " using the player's SkinsRestorer / SkinsRestorerX skin with name " + getSkinsRestorerAPI().getSkinName(targetPlayer.getName()) + "…");
+					writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUIDString);
 					return;
 				} catch (Exception e) {
 					getLogger().severe("An error occurred while attempting to acquire the SkinsRestorer / SkinsRestorerX skin data for " + targetPlayer.getName() + "'s true skin!");
@@ -174,8 +176,8 @@ public class BlueMapSkinSupport extends JavaPlugin {
 				logInfo(((preferences.getBoolean("alwaysUseCustomSkinProviderPluginForSkinLookup")) ? "Using the CustomSkinsManager API to derive " + targetPlayer.getName() + "'s true skin." : "The player " + targetPlayer.getName() + " has a custom skin set via CustomSkinsManager! Proceeding to use the CustomSkinsManager API to derive their true skin…"));
 				String skinTextureURL = getCustomSkinsManagerAPI().getPlayer(targetPlayer.getName()).getCurrentSkin().getURL();
 				logInfo("skinTextureURL for " + targetPlayer.getName() + "'s skin is " + skinTextureURL + "!");
-				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUID + " using the player's CustomSkinsManager skin…");
-				writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUID);
+				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUIDString + " using the player's CustomSkinsManager skin…");
+				writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(skinTextureURL), playerUUIDString);
 				return;
 			} else {
 				logInfo("The player " + targetPlayer.getName() + " is using a native Mojang skin!");
@@ -183,13 +185,13 @@ public class BlueMapSkinSupport extends JavaPlugin {
 				String effectiveDerivedUUID = deriveMojangUUIDFromMojangUsername(targetPlayer.getName());
 				if (effectiveDerivedUUID == null) {
 					getLogger().warning("effectiveDerivedUUID is null! This usually happens when the username " + targetPlayer.getName() + " is not actually a valid Mojang username.");
-					// getLogger().warning("Writing default fallback 8x8@1x head+head2 image for " + player.getName() + " with player UUID " + playerUUID + " instead…");
-					// writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString("http://assets.mojang.com/SkinTemplates/alex.png"), playerUUID);
+					// getLogger().warning("Writing default fallback 8x8@1x head+head2 image for " + player.getName() + " with player UUID " + playerUUIDString + " instead…");
+					// writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString("http://assets.mojang.com/SkinTemplates/alex.png"), playerUUIDString);
 					return;
 				}
 				logInfo("Native Mojang UUID for " + targetPlayer.getName() + " is " + effectiveDerivedUUID + "!");
-				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUID + " using effective derived Mojang UUID " + effectiveDerivedUUID + "…");
-				writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(deriveSkinTextureURLStringFromMojangUUID(effectiveDerivedUUID)), playerUUID);
+				logInfo("Processing true composited 8x8@1x head+head2 image for " + targetPlayer.getName() + " with player UUID " + playerUUIDString + " using effective derived Mojang UUID " + effectiveDerivedUUID + "…");
+				writeFinalCompositedHeadImageToDiskForPlayerUUID(compositeUnifiedPlayerHeadTextureViaHeadAndHead2ForSkinTextureURLString(deriveSkinTextureURLStringFromMojangUUID(effectiveDerivedUUID)), playerUUIDString);
 			}
 		}, 120);
 	}
@@ -291,15 +293,15 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		return null;
 	}
 
-	public void writeFinalCompositedHeadImageToDiskForPlayerUUID(BufferedImage headImage, String playerUUID) {
+	public void writeFinalCompositedHeadImageToDiskForPlayerUUID(BufferedImage headImage, String playerUUIDString) {
 		// BlueMap >= 3.8 (BlueMapAPI >= 2.3.0) changed the way how playerheads are stored — instead of in a unified common directory, they're now stored per map for some reason.
 		// ※ If you want to use this plugin with BlueMap versions all the way down to BlueMap 2.1 for some reason, just comment this entire for loop out, change the BlueMapAPI version to `v2.0.0` in pom.xml, and make sure `alsoWriteToLegacyUnifiedDirectory` is enabled.
 		for (BlueMapMap iteratedMap : getBlueMapAPI().getMaps()) {
-			logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to asset storage directory for map ID " + iteratedMap.getId() + "…");
-			try (OutputStream finalCompositedHeadImage = iteratedMap.getAssetStorage().writeAsset("playerheads/" + playerUUID + ".png")) {
+			logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUIDString + " to asset storage directory for map ID " + iteratedMap.getId() + "…");
+			try (OutputStream finalCompositedHeadImage = iteratedMap.getAssetStorage().writeAsset("playerheads/" + playerUUIDString + ".png")) {
 				ImageIO.write(headImage, "png", finalCompositedHeadImage);
 			} catch (IOException e) {
-				getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUID + "!");
+				getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUIDString + "!");
 				getLogger().severe("Please make sure that your filesystem permissions are set correctly!");
 				e.printStackTrace();
 			}
@@ -315,12 +317,12 @@ public class BlueMapSkinSupport extends JavaPlugin {
 				blueMapWebUIPlayerHeadsDirectory.mkdirs();
 			}
 
-			File finalCompositedHeadImage = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash, playerUUID + ".png");
-			logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to " + finalCompositedHeadImage.getAbsolutePath() + "…");
+			File finalCompositedHeadImage = new File(blueMapWebUIPlayerHeadsPathWithTrailingSlash, playerUUIDString + ".png");
+			logInfo("Writing final composited 8x8@1x head+head2 image for player UUID " + playerUUIDString + " to " + finalCompositedHeadImage.getAbsolutePath() + "…");
 			try {
 				ImageIO.write(headImage, "png", finalCompositedHeadImage);
 			} catch (IOException e) {
-				getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUID + " to legacy unified player head directory at " + finalCompositedHeadImage.getAbsolutePath() + "!");
+				getLogger().severe("An I/O error occurred while attempting to write the composited 8x8@1x head+head2 image for player UUID " + playerUUIDString + " to legacy unified player head directory at " + finalCompositedHeadImage.getAbsolutePath() + "!");
 				getLogger().severe("Please make sure that your filesystem permissions are set correctly!");
 				e.printStackTrace();
 			}
