@@ -22,6 +22,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.bluecolored.bluemap.api.BlueMapAPI;
+import de.bluecolored.bluemap.api.BlueMapMap;
+import de.bluecolored.bluemap.api.WebApp;
+
 import net.skinsrestorer.api.SkinsRestorerAPI;
 
 import ru.csm.api.services.SkinsAPI;
@@ -31,6 +35,7 @@ public class BlueMapSkinSupport extends JavaPlugin {
 
 	private SkinsRestorerAPI skinsRestorerAPI;
 	private SkinsAPI customSkinsManagerAPI;
+	private BlueMapAPI blueMapAPI;
 
 	public SkinsRestorerAPI getSkinsRestorerAPI() {
 		return skinsRestorerAPI;
@@ -40,6 +45,10 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		return customSkinsManagerAPI;
 	}
 
+	public BlueMapAPI getBlueMapAPI() {
+		return blueMapAPI;
+	}
+
 	@Override
 	public void onEnable() {
 		getLogger().info("BlueMapSkinSupport");
@@ -47,16 +56,25 @@ public class BlueMapSkinSupport extends JavaPlugin {
 		getLogger().info("Version " + this.getDescription().getVersion());
 		getLogger().info("https://github.com/akemin-dayo/BlueMapSkinSupport");
 
+		// Initialise preferences
 		initialisePreferences();
 
+		// Get BlueMapAPI instance upon initialisation callback
+		BlueMapAPI.onEnable(blueMapAPIInstance -> {
+			getLogger().info("Initialising BlueMap API…");
+			blueMapAPI = blueMapAPIInstance;
+		});
+
+		// Get custom skin provider plugin API instance (※ only one can be present at a time)
 		if (getServer().getPluginManager().getPlugin("SkinsRestorer") != null) {
-			getLogger().info("SkinsRestorer detected! Using SkinsRestorer API…");
+			getLogger().info("SkinsRestorer / SkinsRestorerX detected! Using SkinsRestorer API…");
 			skinsRestorerAPI = SkinsRestorerAPI.getApi();
 		} else if (getServer().getPluginManager().getPlugin("CustomSkinsManager") != null) {
 			getLogger().info("CustomSkinsManager detected! Using CustomSkinsManager API…");
 			customSkinsManagerAPI = getServer().getServicesManager().getRegistration(SkinsAPI.class).getProvider();
 		}
 
+		// Register custom skin provider plugin event listeners
 		if (skinsRestorerAPI != null) {
 			getLogger().info("Registering SkinsRestorer event listeners…");
 			getServer().getPluginManager().registerEvents(new SkinsRestorerEventListeners(this), this);
@@ -64,6 +82,8 @@ public class BlueMapSkinSupport extends JavaPlugin {
 			getLogger().info("Registering CustomSkinsManager event listeners…");
 			getServer().getPluginManager().registerEvents(new CustomSkinsManagerEventListeners(this), this);
 		}
+
+		// Register native Bukkit event listeners
 		getLogger().info("Registering native Bukkit event listeners…");
 		getServer().getPluginManager().registerEvents(new NativeBukkitEventListeners(this), this);
 	}
