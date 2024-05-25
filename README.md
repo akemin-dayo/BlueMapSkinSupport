@@ -5,6 +5,7 @@
 
 ### Table of Contents
 * [**What is this?**](#what-is-this)
+* [**Supported custom skin provider plugins**](#supported-custom-skin-provider-plugins)
 * [**How do I install this on my Minecraft server?**](#how-do-i-install-this-on-my-minecraft-server)
 	* [Prerequisites](#prerequisites)
 	* [Installation](#installation)
@@ -15,24 +16,33 @@
 * [**Links**](#links)
 * [**License**](#license)
 
+---
+
 ## What is this?
 
-BlueMapSkinSupport is a plugin that allows [BlueMap](https://github.com/BlueMap-Minecraft/BlueMap/releases) to be able to acquire and display player heads for Minecraft servers (online-mode or offline-mode) that are using custom skin provider plugins for custom player-defined skins, as well as offline-mode Minecraft servers without any plugins installed.
-
-Supported custom skin provider plugins are [SkinsRestorer / SkinsRestorerX](https://github.com/SkinsRestorer/SkinsRestorerX/releases) or [CustomSkinsManager](https://spigotmc.org/resources/57760). (※ The use of these plugins is not required.)
+BlueMapSkinSupport is a plugin that allows [BlueMap](https://github.com/BlueMap-Minecraft/BlueMap/releases) to be able to acquire and display player heads for Minecraft servers (in both online-mode or offline-mode) that are using custom skin provider plugins for custom player-defined skins, as well as offline-mode Minecraft servers that have no custom skin provider plugins installed.
 
 Player heads are generated in the exact same way as BlueMap's native player heads, and the web root directory, among other options are fully configurable.
+
+--
+
+## Supported custom skin provider plugins
+
+* [SkinsRestorer / SkinsRestorerX](https://github.com/SkinsRestorer/SkinsRestorerX/releases) (※ recommended)
+* [CustomSkinsManager](https://github.com/Nan1t/Custom-Skins-Manager/releases) (※ deprecated, project was abandoned — support was added for this plugin only because someone requested it anyway, as I personally have always used SkinsRestorerX)
+
+※ The use of these plugins is _not_ required — BlueMapSkinSupport will work even without them, if you have some reason to want to do so.
 
 ---
 
 ## How do I install this on my Minecraft server?
 
 ### Prerequisites
-* [Paper](https://papermc.io/downloads) (recommended) / [Spigot](https://spigotmc.org/wiki/buildtools) / [CraftBukkit](https://spigotmc.org/wiki/buildtools/#compile-craftbukkit) for Minecraft 1.8 or higher
+* [Paper](https://papermc.io/downloads) (※ recommended) / [Spigot](https://spigotmc.org/wiki/buildtools) / [CraftBukkit](https://spigotmc.org/wiki/buildtools/#compile-craftbukkit) for Minecraft 1.8 or higher
 	* This should also work with any other Minecraft server software capable of loading Bukkit plugins.
 	* If you are using [Waterfall](https://papermc.io/downloads#Waterfall) / [BungeeCord](https://spigotmc.org/wiki/bungeecord-installation), you will need to install this plugin on each individual backend Minecraft server.
-* Optionally: [SkinsRestorer / SkinsRestorerX](https://github.com/SkinsRestorer/SkinsRestorerX/releases) or [CustomSkinsManager](https://spigotmc.org/resources/57760)
-	
+* Optionally, one of the supported custom skin provider plugins listed above
+
 ### Installation
 1. Completely shut down your Minecraft server using `/stop`.
 2. Download the latest *.jar file from the [GitHub releases page](https://github.com/akemin-dayo/BlueMapSkinSupport/releases).
