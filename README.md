@@ -28,8 +28,8 @@ Player heads are generated in the exact same way as BlueMap's native player head
 
 ## Supported custom skin provider plugins
 
-* [SkinsRestorer / SkinsRestorerX 14.x](https://github.com/SkinsRestorer/SkinsRestorerX/releases) (※ recommended)
-	* Compatibility with 15.x will be added soon.
+* [SkinsRestorer / SkinsRestorerX 14.x (※ minimum 14.1)](https://github.com/SkinsRestorer/SkinsRestorerX/releases) (※ recommended)
+	* Looking for compatibility with 15.x and higher? You're on the wrong branch.
 * [CustomSkinsManager](https://github.com/Nan1t/Custom-Skins-Manager/releases) (※ deprecated, project was abandoned — support was added for this plugin only because someone requested it anyway, as I personally have always used SkinsRestorerX)
 
 ※ The use of these plugins is _not_ required — BlueMapSkinSupport will work even without them, if you have some reason to want to do so.
