@@ -151,8 +151,8 @@ public class BlueMapSkinSupport extends JavaPlugin {
 	public void writeTrueCompositedPlayerHeadForBukkitPlayerAsynchronousCallback(Player targetPlayer) {
 		logInfo("Notification callback received! Waiting 120 ticks (~6 seconds at 20 TPS) before actually executing…");
 		getServer().getScheduler().runTaskLaterAsynchronously(this, () -> {
-			UUID playerUUID = null;
-			String playerUUIDString = null;
+			UUID playerUUID;
+			String playerUUIDString;
 			try {
 				playerUUID = targetPlayer.getUniqueId();
 				playerUUIDString = playerUUID.toString();
